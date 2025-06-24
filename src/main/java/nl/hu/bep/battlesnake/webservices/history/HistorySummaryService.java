@@ -26,4 +26,8 @@ public class HistorySummaryService {
 
         return HistoryDTOMapper.fromDocument(doc);
     }
+    public boolean deleteGameById(String gameId) {
+        var result = sessions.deleteOne(eq("gameId", gameId));
+        return result.getDeletedCount() > 0;
+    }
 }

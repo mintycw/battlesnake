@@ -8,10 +8,7 @@ import nl.hu.bep.battlesnake.models.api.history.GamesDTO;
 import nl.hu.bep.battlesnake.models.db.GameSession;
 
 import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -20,6 +17,7 @@ import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.mongodb.client.model.Filters.eq;
 
@@ -67,5 +65,21 @@ public class HistoryResource {
         }
 
         return Response.ok(summary).build();
+    }
+
+    @DELETE
+    @Path("games/{id}")
+    @RolesAllowed("admin")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteGameById(@PathParam("id") String id) {
+        HistorySummaryService service = new HistorySummaryService(database);
+
+        boolean isDeleted = service.deleteGameById(id);
+
+        if (!isDeleted) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Game not found").build();
+        }
+
+        return Response.ok(Map.of("message", "Game successfully deleted")).build();
     }
 }
