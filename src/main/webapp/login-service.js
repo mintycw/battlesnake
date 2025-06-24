@@ -1,23 +1,44 @@
 export default class LoginService {
     isLoggedIn() {
-        //TODO: hoe ga je bepalen of iemand ingelogd is (geweest)?
-        return false;
+        // Will rely on /me to confirm if token is valid
+        return this.getUser().then(user => !!user);
     }
 
     login(user, password) {
-        //TODO: inloggen met POST
-        return Promise.resolve();
+        return fetch("/eindopdracht_war/restservices/auth/login", {
+            method: "POST",
+            credentials: 'include',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ username: user, password })
+        })
+            .then(response => {
+                if (!response.ok) throw new Error("Login failed");
+                return response.json();
+            })
+            .then(data => {
+                console.log("Login successful:", data);
+                return true;
+            });
     }
 
     getUser() {
-        //TODO: deze GET method test je token op server-side problemen. Je kunt client-side op zich wel 'ingelogd' zijn
-        //maar het zou altijd zomaar kunnen dat je token verlopen is, of dat er server-side iets anders aan de hand is.
-        //Dus het is handig om te checken met een -echte fetch- of je login-token wel echt bruikbaar is.
-        return Promise.resolve(null);
+        return fetch("/eindopdracht_war/restservices/auth/me", {
+            method: "GET",
+            credentials: 'include',
+        })
+            .then(response => {
+                if (!response.ok) return null;
+                return response.json();
+            });
     }
 
     logout() {
-        //TODO: hoe ga je eigenlijk iemand 'uitloggen'?
-        return Promise.resolve();
+        return fetch("/eindopdracht_war/restservices/auth/logout", {
+            method: "POST",
+            credentials: 'include',
+        }).catch(() => {})
+            .finally(() => Promise.resolve());
     }
 }

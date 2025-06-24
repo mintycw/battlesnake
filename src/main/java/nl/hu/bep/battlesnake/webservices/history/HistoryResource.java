@@ -7,6 +7,7 @@ import nl.hu.bep.battlesnake.models.api.history.GameDTO;
 import nl.hu.bep.battlesnake.models.api.history.GamesDTO;
 import nl.hu.bep.battlesnake.models.db.GameSession;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -30,6 +31,7 @@ public class HistoryResource {
 
     @GET
     @Path("/games")
+    @RolesAllowed({"user", "admin"})
     @Produces(MediaType.APPLICATION_JSON)
     public Response getGames() {
         List<GamesDTO> gameIdDTOs = new ArrayList<>();
@@ -54,6 +56,7 @@ public class HistoryResource {
 
     @GET
     @Path("/games/{id}")
+    @RolesAllowed({"user", "admin"})
     @Produces(MediaType.APPLICATION_JSON)
     public Response getGameById(@PathParam("id") String id) {
         HistorySummaryService service = new HistorySummaryService(database);

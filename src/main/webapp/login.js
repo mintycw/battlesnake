@@ -5,8 +5,10 @@ import LoginService from "./login-service.js";
 
 let service = new LoginService();
 
-function refresh() {
-    if (service.isLoggedIn()) {
+async function refresh() {
+    const loggedIn = await service.isLoggedIn();
+
+    if (loggedIn) {
         document.forms.login.style = "display:none";
         document.forms.logout.style = "display:block";
     } else {

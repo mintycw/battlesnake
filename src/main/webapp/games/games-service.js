@@ -1,7 +1,10 @@
 export default class GamesService {
     async getGameIds() {
         try {
-            const response = await fetch('/eindopdracht_war/restservices/history/games');
+            const response = await fetch('/eindopdracht_war/restservices/history/games', {
+                method: "GET",
+                credentials: "include"
+            });
             if (!response.ok) {
                 throw new Error(`Failed to fetch game IDs: ${response.status} ${response.statusText}`);
             }
@@ -15,7 +18,10 @@ export default class GamesService {
 
     async getReplay(gameId) {
         try {
-            const response = await fetch(`/eindopdracht_war/restservices/history/games/${gameId}`);
+            const response = await fetch(`/eindopdracht_war/restservices/history/games/${gameId}`, {
+                method: "GET",
+                credentials: "include"
+            });
             if (!response.ok) {
                 throw new Error(`Failed to fetch game ID: ${response.status} ${response.statusText}`);
             }
