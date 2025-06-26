@@ -37,7 +37,7 @@ export default function Login() {
 				className="px-2 py-1 rounded border border-gray-300 outline-0 text-slate-100 w-40 text-sm"
 			/>
 			<input
-				type="text"
+				type="password"
 				placeholder="password"
 				onChange={(e) => setPassword(e.target.value)}
 				value={password}
