@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+	overflow-x: hidden; /* optional, for horizontal scroll */
+}
+
+@theme {
+	--animate-fade-in-scale: fade-in-scale 0.3s ease-out;
+
+	@keyframes fade-in-scale {
+		0% {
+			opacity: 0;
+			transform: scale(0.95);
+		}
+		100% {
+			opacity: 1;
+			transform: scale(1);
+		}
+	}
+}
