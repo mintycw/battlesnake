@@ -1,9 +1,12 @@
 package nl.hu.bep.battlesnake.webservices.game;
 
+import com.mongodb.client.MongoDatabase;
 import nl.hu.bep.battlesnake.models.api.game.GameRequest;
 import nl.hu.bep.battlesnake.models.api.game.MoveResponse;
-import nl.hu.bep.battlesnake.models.api.game.SnakeRequest;
+import nl.hu.bep.battlesnake.models.api.game.SnakeResponse;
+import nl.hu.bep.battlesnake.models.api.snake.SnakeDTO;
 import nl.hu.bep.battlesnake.webservices.game.moveservice.*;
+import nl.hu.bep.battlesnake.webservices.snake.SnakeService;
 import nl.hu.bep.setup.MongoService;
 
 import javax.ws.rs.*;
@@ -19,15 +22,21 @@ import static com.mongodb.client.model.Filters.eq;
 
 @Path("/")
 public class GameResource {
-
+    private final MongoDatabase database = MongoService.getDatabase();
     private final MongoCollection<GameSession> sessions =
             MongoService.getDatabase().getCollection("gamesessions", GameSession.class);
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public SnakeRequest getSnake() {
-        System.out.println("getSnake");
-        return new SnakeRequest();
+    public Response getSnake() {
+        SnakeService service = new SnakeService(database);
+        SnakeResponse snakeResponse = service.getSnakeResponse();
+
+        if (snakeResponse == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Snake not found").build();
+        }
+
+        return Response.ok(snakeResponse).build();
     }
 
     @POST

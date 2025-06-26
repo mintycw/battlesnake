@@ -1,4 +1,6 @@
-package nl.hu.bep.battlesnake.models.api.game;
+package nl.hu.bep.battlesnake.models.db;
+
+import java.util.Date;
 
 public class SnakeRequest {
     private String apiVersion;
@@ -8,22 +10,20 @@ public class SnakeRequest {
     private String tail;
     private String version;
 
-    public SnakeRequest() {
-        this.apiVersion = "1";
-        this.author = "mintycw";
-        this.color = "#CEE5D5";
-        this.head = "default";
-        this.tail = "default";
-        this.version = "1";
-    }
+    private Date lastUpdated;
+    private String updatedBy;
 
-    public SnakeRequest(String apiVersion, String author, String color, String head, String tail, String version) {
+    public SnakeRequest() {}
+
+    public SnakeRequest(String apiVersion, String author, String color, String head, String tail, String version, Date updated, String updatedBy) {
         this.apiVersion = apiVersion;
         this.author = author;
         this.color = color;
         this.head = head;
         this.tail = tail;
         this.version = version;
+        this.lastUpdated = updated;
+        this.updatedBy = updatedBy;
     }
 
     public String getApiVersion() {
@@ -72,5 +72,21 @@ public class SnakeRequest {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public Date getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
     }
 }

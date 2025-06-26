@@ -1,18 +1,51 @@
 export default class SnakeService {
     async getSnake() {
-        //TODO: haal deze data van de server
-        return Promise.resolve({
-            apiversion: "1",
-            author: "de dapper student",
-            color: "#ff0000",
-            head: "default",
-            tail: "default",
-            version: "0.1"
-        });
+        try {
+            const response = await fetch('/eindopdracht_war/restservices/snake', {
+                method: "GET",
+                credentials: "include"
+            });
+
+            if (response.status === 403) {
+                alert("Unauthorized")
+                throw new Error("You are not authorized to fetch this snake (403 Forbidden).");
+            }
+
+            if (!response.ok) {
+                throw new Error(`Failed to update snake: ${response.status} ${response.statusText}`);
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error('Error updating snake:', error);
+            return [];
+        }
     }
 
     async updateSnake(updatedSnake) {
-        //TODO: update je slang aan de server-kant met de nieuwe gegevens
-        return Promise.resolve();
+        try {
+            const response = await fetch('/eindopdracht_war/restservices/snake', {
+                method: "PUT",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(updatedSnake)
+            });
+
+            if (response.status === 403) {
+                alert("Unauthorized")
+                throw new Error("You are not authorized to update this snake (403 Forbidden).");
+            }
+
+            if (!response.ok) {
+                throw new Error(`Failed to update snake: ${response.status} ${response.statusText}`);
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error('Error updating snake:', error);
+            return [];
+        }
     }
 }
