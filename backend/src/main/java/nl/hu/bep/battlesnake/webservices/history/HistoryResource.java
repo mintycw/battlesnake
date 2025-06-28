@@ -5,6 +5,7 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import nl.hu.bep.battlesnake.models.api.history.GameDTO;
 import nl.hu.bep.battlesnake.models.api.history.GamesDTO;
+import nl.hu.bep.battlesnake.models.api.history.StatsDTO;
 import nl.hu.bep.battlesnake.models.db.GameSession;
 
 import javax.annotation.security.RolesAllowed;
@@ -26,6 +27,16 @@ public class HistoryResource {
 
     private final MongoDatabase database = MongoService.getDatabase();
     private final MongoCollection<GameSession> sessions = database.getCollection("gamesessions", GameSession.class);
+
+    @GET
+    @Path("/stats")
+    @RolesAllowed({"user", "admin"})
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getStats() {
+        HistoryService service = new HistoryService(database);
+        StatsDTO stats = service.getSummaryStats();
+        return Response.ok(stats).build();
+    }
 
     @GET
     @Path("/games")
@@ -57,8 +68,8 @@ public class HistoryResource {
     @RolesAllowed({"user", "admin"})
     @Produces(MediaType.APPLICATION_JSON)
     public Response getGameById(@PathParam("id") String id) {
-        HistorySummaryService service = new HistorySummaryService(database);
-        GameDTO summary = service.summarizeGame(id);
+        HistoryService service = new HistoryService(database);
+        GameDTO summary = service.getGameDetails(id);
 
         if (summary == null) {
             return Response.status(Response.Status.NOT_FOUND).entity("Game not found").build();
@@ -72,7 +83,7 @@ public class HistoryResource {
     @RolesAllowed("admin")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteGameById(@PathParam("id") String id) {
-        HistorySummaryService service = new HistorySummaryService(database);
+        HistoryService service = new HistoryService(database);
 
         boolean isDeleted = service.deleteGameById(id);
 

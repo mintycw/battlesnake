@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getSnake, updateSnake } from "../lib/api/customizationService";
+import SnakePreview from "../components/SnakePreview";
 
 const heads = ["default", "beluga", "evil", "sand-worm", "silly"];
 const tails = ["default", "round-bum", "small-rattle", "freckled", "curled"];
@@ -53,11 +54,6 @@ export default function Customization() {
 	if (loading) {
 		return <p className="text-center mt-10 text-gray-500">Loading...</p>;
 	}
-
-	// Construct Battlesnake avatar URL dynamically
-	const avatarUrl = `https://exporter.battlesnake.com/avatars/head:${
-		snake.head
-	}/tail:${snake.tail}/color:${encodeURIComponent(snake.color)}/200x30.svg`;
 
 	return (
 		<div className="flex overflow-y-auto gap-10 flex-row items-center justify-center w-full">
@@ -152,16 +148,13 @@ export default function Customization() {
 					{updating ? "Updating..." : "Update"}
 				</button>
 			</form>
-
-			{/* Right side: snake avatar preview */}
-			<div className="flex-1  max-w-md bg-white h-min rounded-lg shadow-md p-6">
-				<h2 className="text-xl font-semibold mb-4">Preview</h2>
-				<img
-					src={avatarUrl}
-					alt={`Battlesnake preview: head ${snake.head}, tail ${snake.tail}, color ${snake.color}`}
-					className="rounded-lg w-auto h-20"
+			<div className="max-w-md">
+				<SnakePreview
+					head={snake.head}
+					tail={snake.tail}
+					color={snake.color}
 				/>
-			</div>
+			</div>{" "}
 		</div>
 	);
 }

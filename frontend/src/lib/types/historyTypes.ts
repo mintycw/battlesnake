@@ -14,3 +14,9 @@ export type TGameDetails = {
 	endHealth: number;
 	survived: boolean;
 };
+
+export type TStats = {
+	gamesPlayed: number;
+	winRate: number; // percent
+	averageLength: number; // average snake length
+};
