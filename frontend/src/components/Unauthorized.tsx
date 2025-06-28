@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function Unauthorized() {
 	return (
 		<div className="min-h-full flex items-center justify-center px-4">

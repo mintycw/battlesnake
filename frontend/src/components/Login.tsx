@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { login, logout } from "../lib/api/authService";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
@@ -15,14 +15,12 @@ export default function Login() {
 		event.preventDefault();
 
 		login(username, password).then((data) => {
-			console.log("Login successful:", data);
 			navigate(0);
 		});
 	}
 
 	function handleLogout(): void {
 		logout().then(() => {
-			console.log("Logout successful");
 			navigate(0);
 		});
 	}

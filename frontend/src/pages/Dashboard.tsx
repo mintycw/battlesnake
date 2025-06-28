@@ -3,10 +3,8 @@ import type { TStats } from "../lib/types/historyTypes";
 import type { TSnakeCustomization } from "../lib/types/customizationTypes";
 import { getStats } from "../lib/api/historyService";
 import { getSnake } from "../lib/api/customizationService";
-import SnakePreview from "../components/SnakePreview";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../hooks/useAuth";
 import Stats from "../components/dashboard/Stats";
-import Unauthorized from "../components/Unauthorized";
 import Landing from "../components/dashboard/Landing";
 
 export default function Dashboard() {

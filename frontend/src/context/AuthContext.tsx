@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState, useCallback } from "react";
 import { getCurrentUser } from "../lib/api/authService";
 import type { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 	const navigate = useNavigate();
 
-	function refreshAuth(): void {
+	const refreshAuth = useCallback(() => {
 		getCurrentUser()
 			.then((data) => {
 				if (!data) {
@@ -41,11 +41,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 				setUser(null);
 				setAuthenticated(false);
 			});
-	}
+	}, [navigate]);
 
 	useEffect(() => {
 		refreshAuth();
-	}, []);
+	}, [refreshAuth]);
 
 	return (
 		<AuthContext.Provider
@@ -56,4 +56,4 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 	);
 };
 
-export const useAuth = () => useContext(AuthContext);
+export { AuthContext };

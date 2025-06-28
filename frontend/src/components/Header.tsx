@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import Login from "./Login";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../hooks/useAuth";
 import { useState } from "react";
 import { MdMenu, MdClose } from "react-icons/md";
 

@@ -15,8 +15,6 @@ export async function getGameHistory(): Promise<TGameHistory[]> {
 				if (!response.ok) {
 					const error = await response.json();
 
-					console.log(error, response);
-
 					throw new Error(
 						error.message || "Failed to fetch game history",
 					);

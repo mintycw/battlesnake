@@ -8,7 +8,7 @@ import {
 import type { TGameHistory } from "../lib/types/historyTypes";
 
 import HistoryList from "../components/history/HistoryList";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../hooks/useAuth";
 import Loading from "../components/Loading";
 
 function History(): JSX.Element {
@@ -30,7 +30,7 @@ function History(): JSX.Element {
 		}
 
 		fetchGameHistory();
-	}, []);
+	}, [authenticated, user, roles, navigate]);
 
 	function fetchGameHistory(): void {
 		setLoading(true);

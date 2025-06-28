@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom";
-
 export default function Landing() {
 	return (
 		<div className="min-h-full flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-200 p-6">
