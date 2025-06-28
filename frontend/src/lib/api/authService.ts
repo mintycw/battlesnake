@@ -1,5 +1,10 @@
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8080";
 
+type TLoginResponse = {
+	username: string;
+	roles: string[];
+};
+
 export function login(username: string, password: string): Promise<string> {
 	return new Promise((resolve, reject) => {
 		if (!username || !password) {
@@ -52,7 +57,7 @@ export function logout(): Promise<void> {
 	});
 }
 
-export function getCurrentUser(): Promise<string | null> {
+export function getCurrentUser(): Promise<TLoginResponse | null> {
 	return new Promise((resolve, reject) => {
 		fetch(`${BACKEND_URL}/api/auth/me`, {
 			method: "GET",
@@ -60,6 +65,11 @@ export function getCurrentUser(): Promise<string | null> {
 		})
 			.then((response) => {
 				if (!response.ok) {
+					if (response.status === 401 || response.status === 403) {
+						resolve(null);
+						return;
+					}
+
 					return response.json().then((error) => {
 						throw new Error(
 							error.message || "Failed to fetch current user",
@@ -68,8 +78,8 @@ export function getCurrentUser(): Promise<string | null> {
 				}
 				return response.json();
 			})
-			.then((data) => {
-				resolve(data.username || null);
+			.then((data: TLoginResponse) => {
+				resolve(data || null);
 			})
 			.catch((error) => {
 				reject(error);

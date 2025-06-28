@@ -4,6 +4,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import nl.hu.bep.battlesnake.models.api.auth.LogInRequest;
 import nl.hu.bep.battlesnake.models.api.auth.SignUpRequest;
+import nl.hu.bep.battlesnake.models.api.auth.UserDTO;
 import nl.hu.bep.battlesnake.models.db.User;
 
 import javax.annotation.security.RolesAllowed;
@@ -12,10 +13,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Path("/auth")
 public class AuthResource {
@@ -32,11 +30,15 @@ public class AuthResource {
         String role = signupRequest.getRole();
 
         if (username == null || password == null) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Username and password required").build();
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(Map.of("status", 400, "message", "Username and password required"))
+                    .build();
         }
 
         if (userService.findByUsername(username) != null) {
-            return Response.status(Response.Status.CONFLICT).entity("User already exists").build();
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(Map.of("status", 409, "message", "User already exists"))
+                    .build();
         }
 
         String hashedPassword = hashPassword(password);
@@ -44,7 +46,7 @@ public class AuthResource {
         User user = new User(username, hashedPassword, role);
         userService.saveUser(user);
 
-        return Response.ok(Map.of("message", "User registered successfully")).build();
+        return Response.ok(Map.of("status", 200, "message", "User registered successfully")).build();
     }
 
 
@@ -58,15 +60,21 @@ public class AuthResource {
 
         User user = userService.findByUsername(username);
         if (user == null) {
-            return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid credentials").build();
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity(Map.of("status", 401, "message", "Invalid credentials"))
+                    .build();
         }
 
         try {
             if (!user.getPassword().equals(hashPassword(password))) {
-                return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid credentials").build();
+                return Response.status(Response.Status.UNAUTHORIZED)
+                        .entity(Map.of("status", 401, "message", "Invalid credentials"))
+                        .build();
             }
         } catch (NoSuchAlgorithmException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error verifying password").build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(Map.of("status", 500, "message", "Error verifying password"))
+                    .build();
         }
 
         String token = Jwts.builder()
@@ -90,7 +98,7 @@ public class AuthResource {
                 false,
                 true);
 
-        return Response.ok(Map.of("message", "Login successful"))
+        return Response.ok(Map.of("status", 200, "message", "Login successful"))
                 .cookie(jwtCookie)
                 .build();
     }
@@ -109,7 +117,7 @@ public class AuthResource {
                 false,
                 true
         );
-        return Response.ok(Map.of("message", "Logged out"))
+        return Response.ok(Map.of("status", 200, "message", "Logged out"))
                 .cookie(expiredTokenCookie)
                 .build();
     }
@@ -119,8 +127,21 @@ public class AuthResource {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"user", "admin"})
     public Response getCurrentUser(@Context SecurityContext securityContext) {
-        String username = securityContext.getUserPrincipal().getName();
-        return Response.ok(Map.of("username", username)).build();
+        try {
+            String username = securityContext.getUserPrincipal().getName();
+
+            List<String> roles = new ArrayList<>();
+            if (securityContext.isUserInRole("admin")) roles.add("admin");
+            if (securityContext.isUserInRole("user")) roles.add("user");
+
+            UserDTO dto = new UserDTO(username, roles);
+            return Response.ok(dto).build();
+
+        } catch (Exception e) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity(Map.of("status", 401, "message", "Unauthorized"))
+                    .build();
+        }
     }
 
     // Simple SHA-256 hash helper

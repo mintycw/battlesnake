@@ -9,7 +9,7 @@ import History from "./pages/History";
 function App() {
 	return (
 		<AuthProvider>
-			<div className="flex flex-col min-h-screen">
+			<div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-50 to-slate-200 ">
 				<Header />
 
 				<main className="h-[calc(100vh-3.5rem)] mt-14 overflow-y-auto">

@@ -34,14 +34,14 @@ export default function Login() {
 				placeholder="username"
 				onChange={(e) => setUsername(e.target.value)}
 				value={username}
-				className="px-2 py-1 rounded border border-gray-300 outline-0 text-slate-100 w-40 text-sm"
+				className="px-2 py-1 rounded border border-gray-300 outline-0 text-slate-100 w-20 sm:w-40 text-sm"
 			/>
 			<input
 				type="password"
 				placeholder="password"
 				onChange={(e) => setPassword(e.target.value)}
 				value={password}
-				className="px-2 py-1 rounded border border-gray-300 outline-0 text-slate-100 w-40 text-sm"
+				className="px-2 py-1 rounded border border-gray-300 outline-0 text-slate-100 w-20 sm:w-40 text-sm"
 			/>
 			<button className="px-4 py-1 bg-slate-500 text-white rounded hover:brightness-90 transition duration-200">
 				Login
