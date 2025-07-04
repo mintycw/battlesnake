@@ -9,6 +9,7 @@ import nl.hu.bep.battlesnake.webservices.game.moveservice.*;
 import nl.hu.bep.battlesnake.webservices.snake.SnakeService;
 import nl.hu.bep.setup.MongoService;
 
+import javax.annotation.security.PermitAll;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -20,11 +21,21 @@ import com.mongodb.client.MongoCollection;
 
 import static com.mongodb.client.model.Filters.eq;
 
+@PermitAll
 @Path("/")
 public class GameResource {
-    private final MongoDatabase database = MongoService.getDatabase();
-    private final MongoCollection<GameSession> sessions =
-            MongoService.getDatabase().getCollection("gamesessions", GameSession.class);
+    private final MongoDatabase database;
+    private final MongoCollection<GameSession> sessions;
+
+    public GameResource() {
+        this.database = MongoService.getDatabase();
+        this.sessions = this.database.getCollection("gamesessions", GameSession.class);
+    }
+
+    public GameResource(MongoDatabase database) {
+        this.database = database;
+        this.sessions = database.getCollection("gamesessions", GameSession.class);
+    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

@@ -11,14 +11,15 @@ import java.util.List;
 public class GameStateSimulator {
 
     public GameRequest simulateMove(GameRequest state, String move, Battlesnake snake) {
+        // Calculate the new head position based on the move
         Coord newHead = CoordUtils.getNextCoord(snake.getHead(), move);
 
-        // Clone body and simulate move
+        // Create a new body with the new head at the front
         List<Coord> newBody = new ArrayList<>();
         newBody.add(newHead);
         newBody.addAll(snake.getBody());
 
-        // Check if snake eats food
+        // Check if the snake eats food at the new head position
         boolean ateFood = false;
         List<Coord> newFood = new ArrayList<>(state.getBoard().getFood());
         for (Coord food : newFood) {
@@ -29,7 +30,7 @@ public class GameStateSimulator {
             }
         }
 
-        // If no food eaten, remove tail (move forward)
+        // If the snake did not eat, remove the tail to simulate movement
         if (!ateFood && !newBody.isEmpty()) {
             newBody.remove(newBody.size() - 1);
         }
@@ -49,6 +50,7 @@ public class GameStateSimulator {
                 snake.getCustomizations()
         );
 
+        // Replace the moved snake in the list of snakes on the board
         List<Battlesnake> newSnakes = new ArrayList<>();
         for (Battlesnake s : state.getBoard().getSnakes()) {
             if (s.getId().equals(snake.getId())) {

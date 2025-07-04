@@ -18,7 +18,15 @@ import java.util.*;
 @Path("/auth")
 public class AuthResource {
     private final String SECRET_KEY = System.getenv("SECRET_KEY");
-    private final UserService userService = new UserService();
+    private UserService userService;
+
+    public AuthResource() {
+        this.userService = new UserService(); // or null, if you wire it later
+    }
+
+    public AuthResource(UserService userService) {
+        this.userService = userService;
+    }
 
     @POST
     @Path("/signup")
@@ -145,7 +153,7 @@ public class AuthResource {
     }
 
     // Simple SHA-256 hash helper
-    private String hashPassword(String password) throws NoSuchAlgorithmException {
+    public String hashPassword(String password) throws NoSuchAlgorithmException {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         byte[] hash = digest.digest(password.getBytes());
         return Base64.getEncoder().encodeToString(hash);

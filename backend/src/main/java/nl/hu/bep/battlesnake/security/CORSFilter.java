@@ -7,6 +7,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.annotation.Priority;
 import javax.ws.rs.Priorities;
 import java.io.IOException;
+import java.util.Set;
 
 @Provider
 @Priority(Priorities.HEADER_DECORATOR)
@@ -19,15 +20,20 @@ public class CORSFilter implements ContainerResponseFilter, ContainerRequestFilt
             requestContext.abortWith(Response.ok().build());
         }
     }
+    private static final Set<String> ALLOWED_ORIGINS = Set.of(
+            System.getenv("FRONTEND_URL"),
+            "https://play.battlesnake.com"
+    );
 
     @Override
-    public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext)
-            throws IOException {
-        MultivaluedMap<String, Object> headers = responseContext.getHeaders();
-
-        headers.add("Access-Control-Allow-Origin", System.getenv("FRONTEND_URL"));
-        headers.add("Access-Control-Allow-Credentials", "true");
-        headers.add("Access-Control-Allow-Headers", "origin, content-type, accept, authorization");
-        headers.add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) {
+        String origin = requestContext.getHeaderString("Origin");
+        if (origin != null && ALLOWED_ORIGINS.contains(origin)) {
+            responseContext.getHeaders().add("Access-Control-Allow-Origin", origin);
+            responseContext.getHeaders().add("Vary", "Origin");
+        }
+        responseContext.getHeaders().add("Access-Control-Allow-Credentials", "true");
+        responseContext.getHeaders().add("Access-Control-Allow-Headers", "origin, content-type, accept, authorization");
+        responseContext.getHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
     }
 }

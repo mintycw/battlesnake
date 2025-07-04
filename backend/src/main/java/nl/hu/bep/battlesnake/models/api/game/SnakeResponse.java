@@ -8,8 +8,6 @@ public class SnakeResponse {
     private String tail;
     private String version;
 
-
-
     public SnakeResponse() {
         this.apiVersion = "1";
         this.author = "mintycw";

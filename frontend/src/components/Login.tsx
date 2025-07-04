@@ -14,7 +14,7 @@ export default function Login() {
 	function handleLogin(event: React.FormEvent) {
 		event.preventDefault();
 
-		login(username, password).then((data) => {
+		login(username, password).then(() => {
 			navigate(0);
 		});
 	}

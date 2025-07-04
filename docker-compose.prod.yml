@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+    backend:
+        image: mintycw/battlesnake-backend:latest
+        container_name: battlesnake-backend
+        environment:
+            - MONGO_URI=${MONGO_URI}
+            - SECRET_KEY=${SECRET_KEY}
+            - FRONTEND_URL=${FRONTEND_URL}
+        ports:
+            - "8080:8080"
+        restart: unless-stopped
+        networks:
+            - battlesnake-network
+
+    frontend:
+        image: mintycw/battlesnake-frontend:latest
+        container_name: battlesnake-frontend
+        ports:
+            - "80:80"
+        restart: unless-stopped
+        networks:
+            - battlesnake-network
+        depends_on:
+            - backend
+
+networks:
+    battlesnake-network:
+        driver: bridge
